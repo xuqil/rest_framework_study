@@ -19,5 +19,6 @@ from snippets import urls as rest_url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('snippets.urls'))
+    path('', include('snippets.urls')),
+    path('api-auth', include('rest_framework.urls')),
 ]
