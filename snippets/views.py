@@ -11,6 +11,7 @@ from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework import permissions
 from snippets.permissions import IsOwnerOrReadOnly
+from rest_framework.reverse import reverse
 
 
 class SnippetList(mixins.ListModelMixin,
@@ -57,3 +58,10 @@ class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'snippet': reverse('snippet-list', request=request, format=format)
+    })
