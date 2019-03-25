@@ -5,6 +5,6 @@ app_name = 'rest_api'
 
 urlpatterns = [
     path('list_users/', views.ListUsers.as_view()),
-
+    path('hello/', views.hello_world),
 ]
 
