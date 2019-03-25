@@ -3,6 +3,9 @@ from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
+from rest_api.serializers import UserSerializer
+from rest_framework import generics
+from rest_framework.permissions import IsAdminUser
 
 
 class ListUsers(APIView):
@@ -33,3 +36,14 @@ def hello_world(request):
     if request.method == 'POST':
         return Response({"message": "Got some data", "data": request.data})
     return Response({"message": "hello world"})
+
+
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (IsAdminUser,)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
