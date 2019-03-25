@@ -6,6 +6,8 @@ from rest_framework.decorators import api_view
 from rest_api.serializers import UserSerializer
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser
+from django.shortcuts import get_object_or_404
+from rest_framework import viewsets
 
 
 class ListUsers(APIView):
@@ -46,4 +48,20 @@ class UserList(generics.ListCreateAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class UserViewSet(viewsets.ViewSet):
+    """
+    A simple ViewSet for listing or retrieving users.
+    """
+    def list(self, request):
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = User.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = UserSerializer(user)
         return Response(serializer.data)

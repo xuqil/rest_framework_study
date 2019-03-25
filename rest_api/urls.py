@@ -10,5 +10,6 @@ urlpatterns = [
     path('hello/', views.hello_world),
     path('users/', views.UserList.as_view(queryset=User.objects.all(),
                                           serializer_class=UserSerializer), name='user-list'),
+    path('user_set/', views.UserViewSet.as_view({'get': 'list'})),
 ]
 
