@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'snippets',
     'rest_framework',  # 加入rest_framework
+    'rest_api',
 ]
 
 MIDDLEWARE = [
