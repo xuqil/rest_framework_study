@@ -2,11 +2,11 @@ from django.http import HttpResponse, Http404
 from rest_framework.parsers import JSONParser
 from snippets.models import Snippet
 from snippets.serializers import SnippetSerializer, UserSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework import mixins
+from rest_framework import mixins, viewsets
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework import permissions, renderers
@@ -74,3 +74,30 @@ class SnippetHighlight(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         snippet = self.get_object()
         return Response(snippet.highlighted)
+
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+        这个视图集自动提供 `list` 和 `detail` 操作。
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class SnippetViewSet(viewsets.ModelViewSet):
+    """
+    这个视图集自动提供 `list`，`create`，`retrieve`，`update`和`destroy`操作。
+
+    另外我们还提供了一个额外的 `highlight` 操作。
+    """
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+
+    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
+    def highlight(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
