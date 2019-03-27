@@ -2,11 +2,13 @@ from django.shortcuts import HttpResponse
 from rest_framework.views import APIView  # APIView视图继承View视图
 from rest_framework.authentication import BasicAuthentication
 from rest_framework import exceptions
+from rest_framework.request import Request
 
 
 class MyAuthentication(object):
     def authenticate(self, request):
         token = request._request.GET.get('token')
+        # 获取用户名和密码去数据校验
         if not token:
             raise exceptions.AuthenticationFailed("用户认证失败")
         return ('alex', None)
@@ -22,8 +24,8 @@ class StudentsView(APIView):
     authentication_classes = [MyAuthentication, ]  # 自定义配置文件
 
     def get(self, request, *args, **kwargs):
-        self.dispatch
         print(request)  # 该request不是原request
+        print(request.user)  # request.use为上面的返回元祖('alex', None)的第一个元素
         ret = {
             'code': 1000,  # code可以任意设置
             'msg': 'xxx'
