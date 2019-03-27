@@ -1,67 +1,18 @@
+from django.shortcuts import render
+from django.shortcuts import HttpResponse
+from django.views import View
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import authentication, permissions
-from django.contrib.auth.models import User
-from rest_framework.decorators import api_view
-from rest_api.serializers import UserSerializer
-from rest_framework import generics
-from rest_framework.permissions import IsAdminUser
-from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
 
 
-class ListUsers(APIView):
-    """
-    展示系统中所有的用户
-    * 需要令牌认证。
-    * 只有admin用户能够访问这一个视图
-    """
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAdminUser,)
+class StudentsView(View):
 
-    def get(self, request, format=None):
-        """
-        返回一个用户列表
-        """
-        usernames = [user.username for user in User.objects.all()]
-        return Response(usernames)
+    def get(self, request, *args, **kwargs):
+        return HttpResponse("GET")
+
+    def post(self, request, *args, **kwargs):
+        return HttpResponse('ok')
+
+    def put(self, request):
+        return HttpResponse('ok')
 
 
-@api_view(['GET', 'POST'])
-def hello_world(request):
-    """
-    这个视图将使用默认渲染器、解析器、身份验证设置中指定的类等。通常默认只有GET方法，其他请求方法会报405错误，
-    我们可以手动添加方法为这装饰器指定request方法
-    :param request:
-    :return:
-    """
-    if request.method == 'POST':
-        return Response({"message": "Got some data", "data": request.data})
-    return Response({"message": "hello world"})
-
-
-class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (IsAdminUser,)
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-class UserViewSet(viewsets.ViewSet):
-    """
-    A simple ViewSet for listing or retrieving users.
-    """
-    def list(self, request):
-        queryset = User.objects.all()
-        serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = User.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
