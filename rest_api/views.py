@@ -1,6 +1,8 @@
 from django.shortcuts import HttpResponse
 from django.views import View
 from rest_framework.views import APIView  # APIView视图继承View视图
+from rest_framework.authentication import BasicAuthentication
+from rest_framework import exceptions
 
 
 class StudentsView(APIView):
