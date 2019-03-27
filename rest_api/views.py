@@ -1,18 +1,23 @@
-from django.shortcuts import render
 from django.shortcuts import HttpResponse
 from django.views import View
-from rest_framework.views import APIView
 
 
 class StudentsView(View):
+    """
+    View视图会根据请求识别meth方法，自动分配执行函数
+    最先执行的是dispatch方法
+    """
 
     def get(self, request, *args, **kwargs):
         return HttpResponse("GET")
 
     def post(self, request, *args, **kwargs):
-        return HttpResponse('ok')
+        return HttpResponse('POST')
 
-    def put(self, request):
-        return HttpResponse('ok')
+    def put(self, request, *args, **kwargs):
+        return HttpResponse('PUT')
+
+    def delete(self, request, *args, **kwargs):
+        return HttpResponse('DELETE')
 
 
