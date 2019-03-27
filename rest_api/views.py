@@ -1,10 +1,11 @@
 from django.shortcuts import HttpResponse
 from django.views import View
+from rest_framework.views import APIView  # APIView视图继承View视图
 
 
-class StudentsView(View):
+class StudentsView(APIView):
     """
-    View视图会根据请求识别meth方法，自动分配执行函数
+    APIView视图会根据请求识别meth方法，自动分配执行函数
     最先执行的是dispatch方法
     """
     def dispatch(self, request, *args, **kwargs):
