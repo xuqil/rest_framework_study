@@ -4,12 +4,22 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework import exceptions
 
 
+class MyAuthentication(object):
+    def authenticate(self, request):
+        token = request._request.GET.get('token')
+        if not token:
+            raise exceptions.AuthenticationFailed("用户认证失败")
+        return ('alex', None)
+    def authenticate_header(self, args):
+        pass
+
+
 class StudentsView(APIView):
     """
     APIView视图会根据请求识别meth方法，自动分配执行函数
     最先执行的是dispatch方法
     """
-    authentication_classes = [BasicAuthentication, ]  # 自定义配置文件
+    authentication_classes = [MyAuthentication, ]  # 自定义配置文件
 
     def get(self, request, *args, **kwargs):
         self.dispatch
